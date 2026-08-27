@@ -1,0 +1,648 @@
+/* ==========================================================================
+   KAIRO — Flow State Study & Futuristic AI Productivity Design System
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg-dark: #0b0f19;
+    --bg-card: rgba(22, 31, 51, 0.65);
+    --bg-card-hover: rgba(30, 41, 59, 0.85);
+    --border-glass: rgba(0, 242, 254, 0.15);
+    --border-glow: rgba(0, 242, 254, 0.45);
+    
+    /* Default Preset: Cyan & Violet */
+    --primary-accent: #00f2fe;
+    --secondary-accent: #7f00ff;
+    --accent-rgb: 0, 242, 254;
+    --secondary-rgb: 127, 0, 255;
+    
+    /* Functional Colors */
+    --color-streak: #f59e0b; /* Amber for streak */
+    --color-xp: #00f2fe;     /* Cyan for XP */
+    --color-ambient: #7f00ff;/* Violet for Audio/Ambient */
+    --color-success: #10b981;
+    --color-danger: #ef4444;
+
+    --grad-primary: linear-gradient(135deg, var(--primary-accent) 0%, var(--secondary-accent) 100%);
+    --grad-glow-button: linear-gradient(135deg, var(--primary-accent) 0%, var(--secondary-accent) 100%);
+    --grad-dark-card: linear-gradient(135deg, rgba(22, 31, 51, 0.8) 0%, rgba(11, 15, 25, 0.6) 100%);
+
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+
+    --spring-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --smooth-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Theme Presets */
+body.theme-emerald_amber {
+    --primary-accent: #10b981;
+    --secondary-accent: #f59e0b;
+    --accent-rgb: 16, 185, 129;
+    --secondary-rgb: 245, 158, 11;
+    --border-glass: rgba(16, 185, 129, 0.18);
+    --border-glow: rgba(16, 185, 129, 0.45);
+}
+
+body.theme-rose_indigo {
+    --primary-accent: #f43f5e;
+    --secondary-accent: #6366f1;
+    --accent-rgb: 244, 63, 94;
+    --secondary-rgb: 99, 102, 241;
+    --border-glass: rgba(244, 63, 94, 0.18);
+    --border-glow: rgba(244, 63, 94, 0.45);
+}
+
+body.theme-amber_slate {
+    --primary-accent: #f59e0b;
+    --secondary-accent: #94a3b8;
+    --accent-rgb: 245, 158, 11;
+    --secondary-rgb: 148, 163, 184;
+    --border-glass: rgba(245, 158, 11, 0.18);
+    --border-glow: rgba(245, 158, 11, 0.45);
+}
+
+/* Base Body & App Container */
+.stApp {
+    background: radial-gradient(circle at 10% 10%, rgba(var(--secondary-rgb), 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 90% 90%, rgba(var(--accent-rgb), 0.15) 0%, transparent 45%),
+                var(--bg-dark) !important;
+    font-family: 'Inter', -apple-system, sans-serif !important;
+    color: var(--text-main) !important;
+}
+
+/* Hide default streamlit headers & footers for native feel */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+}
+
+footer, #MainMenu {
+    visibility: hidden;
+}
+
+/* ==========================================================================
+   Custom Cursor System (Two-Layer Trailing Ring + Lagging Orb)
+   ========================================================================== */
+@media (pointer: fine) {
+    body, a, button, input, textarea, select, [role="button"], [role="tab"] {
+        cursor: none !important;
+    }
+}
+
+#kairo-cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid var(--primary-accent);
+    box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.4), inset 0 0 8px rgba(var(--accent-rgb), 0.2);
+    pointer-events: none;
+    z-index: 999999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s var(--spring-ease), height 0.3s var(--spring-ease), border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    will-change: transform, left, top;
+}
+
+#kairo-cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--primary-accent);
+    box-shadow: 0 0 8px var(--primary-accent);
+    pointer-events: none;
+    z-index: 999999;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    will-change: transform, left, top;
+}
+
+#kairo-cursor-ring.cursor-hover {
+    width: 64px;
+    height: 64px;
+    border-width: 2px;
+    border-color: #ffffff;
+    background: rgba(var(--accent-rgb), 0.12);
+    box-shadow: 0 0 24px rgba(var(--accent-rgb), 0.7), 0 0 40px rgba(var(--secondary-rgb), 0.35);
+}
+
+#kairo-cursor-ring.cursor-active {
+    transform: translate(-50%, -50%) scale(0.85);
+}
+
+@media (pointer: coarse) {
+    #kairo-cursor-ring, #kairo-cursor-dot {
+        display: none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #kairo-cursor-ring, #kairo-cursor-dot {
+        display: none !important;
+    }
+    *, ::before, ::after {
+        animation-duration: 0.001s !important;
+        transition-duration: 0.001s !important;
+    }
+}
+
+/* ==========================================================================
+   Sidebar Styling
+   ========================================================================== */
+section[data-testid="stSidebar"] {
+    background-color: rgba(11, 15, 25, 0.88) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid var(--border-glass) !important;
+}
+
+section[data-testid="stSidebar"] .stRadio label {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 0.95rem !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.6rem 1rem !important;
+    border-radius: 12px !important;
+    transition: all 0.25s var(--spring-ease) !important;
+    color: var(--text-muted) !important;
+}
+
+section[data-testid="stSidebar"] .stRadio label:hover {
+    background: rgba(var(--accent-rgb), 0.12) !important;
+    color: var(--primary-accent) !important;
+    transform: translateX(4px) scale(1.02);
+}
+
+/* ==========================================================================
+   Header Banner Cards & Fluid Typography
+   ========================================================================== */
+.synapse-header, .kairo-header {
+    background: var(--grad-dark-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-glass);
+    border-radius: 18px;
+    padding: clamp(1.2rem, 3vw, 2rem) clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: 1.8rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.synapse-header::before, .kairo-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--grad-primary);
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+}
+
+.synapse-title, .kairo-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 800;
+    background: var(--grad-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.synapse-tagline, .kairo-tagline {
+    font-size: clamp(0.85rem, 2vw, 1.05rem);
+    color: var(--text-muted);
+    margin-top: 0.35rem;
+}
+
+/* ==========================================================================
+   Glassmorphism Cards with Spring Easing
+   ========================================================================== */
+.glass-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    padding: clamp(1.1rem, 2.5vw, 1.6rem);
+    margin-bottom: 1.2rem;
+    transition: transform 0.35s var(--spring-ease), box-shadow 0.35s ease, border-color 0.25s ease;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.glass-card:hover {
+    border-color: var(--border-glow) !important;
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 0 24px rgba(var(--accent-rgb), 0.2) !important;
+}
+
+/* Stat / Metric Cards */
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 14px;
+    padding: clamp(1rem, 2vw, 1.4rem);
+    text-align: center;
+    transition: transform 0.35s var(--spring-ease), box-shadow 0.35s ease, border-color 0.25s ease;
+}
+
+.metric-card:hover {
+    border-color: var(--primary-accent);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.25);
+}
+
+.metric-val {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 800;
+    background: var(--grad-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.metric-lbl {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 0.3rem;
+}
+
+/* ==========================================================================
+   Buttons with Magnetic Spring Micro-interactions
+   ========================================================================== */
+.stButton > button {
+    background: var(--grad-glow-button) !important;
+    color: #ffffff !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    min-height: 46px !important;
+    padding: 0.6rem 1.4rem !important;
+    transition: transform 0.3s var(--spring-ease), box-shadow 0.3s ease, filter 0.2s ease !important;
+    box-shadow: 0 4px 18px rgba(var(--accent-rgb), 0.35) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.stButton > button:hover {
+    transform: translateY(-3px) scale(1.03) !important;
+    box-shadow: 0 8px 28px rgba(var(--secondary-rgb), 0.55), 0 0 20px rgba(var(--accent-rgb), 0.4) !important;
+    color: #ffffff !important;
+}
+
+.stButton > button:active {
+    transform: translateY(0) scale(0.96) !important;
+}
+
+.stDownloadButton > button {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    min-height: 46px !important;
+    padding: 0.6rem 1.4rem !important;
+    transition: all 0.3s var(--spring-ease) !important;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35) !important;
+}
+
+.stDownloadButton > button:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.55) !important;
+}
+
+/* ==========================================================================
+   Focus Timer Dedicated Layout & Circular Progress Elements
+   ========================================================================== */
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+}
+
+.timer-mode-tabs {
+    display: inline-flex;
+    background: rgba(11, 15, 25, 0.7);
+    border: 1px solid var(--border-glass);
+    border-radius: 100px;
+    padding: 6px;
+    gap: 8px;
+    margin-bottom: 2rem;
+}
+
+.timer-mode-pill {
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    transition: all 0.3s var(--spring-ease);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.timer-mode-pill.active {
+    background: rgba(var(--accent-rgb), 0.15);
+    color: var(--primary-accent);
+    border-bottom: 2px solid var(--primary-accent);
+    box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.3);
+}
+
+.timer-circle-wrapper {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem auto 2rem;
+}
+
+.timer-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.timer-circle-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 10;
+}
+
+.timer-circle-progress {
+    fill: none;
+    stroke: var(--primary-accent);
+    stroke-width: 10;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 12px rgba(var(--accent-rgb), 0.65));
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.timer-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.timer-digits {
+    font-family: 'Outfit', sans-serif;
+    font-size: 4.2rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(var(--accent-rgb), 0.5);
+    line-height: 1;
+}
+
+.timer-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 0.6rem;
+}
+
+.timer-controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.timer-ctrl-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(22, 31, 51, 0.85);
+    border: 1px solid var(--border-glass);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s var(--spring-ease);
+}
+
+.timer-ctrl-btn:hover {
+    border-color: var(--primary-accent);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.4);
+    color: var(--primary-accent);
+}
+
+.timer-play-btn {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: var(--grad-glow-button);
+    border: none;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.5);
+    transition: all 0.3s var(--spring-ease);
+}
+
+.timer-play-btn:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 45px rgba(var(--secondary-rgb), 0.7), 0 0 25px rgba(var(--accent-rgb), 0.6);
+}
+
+/* ==========================================================================
+   Floating AI Chat Bubble Overlay
+   ========================================================================== */
+.floating-ai-launcher {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: var(--grad-glow-button);
+    box-shadow: 0 8px 30px rgba(var(--accent-rgb), 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: all 0.3s var(--spring-ease);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+}
+
+.floating-ai-launcher:hover {
+    transform: scale(1.12) translateY(-3px);
+    box-shadow: 0 12px 40px rgba(var(--secondary-rgb), 0.65);
+}
+
+.floating-ai-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 2.5px solid var(--bg-dark);
+}
+
+/* Chat Styling */
+.chat-bubble-user {
+    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.2) 0%, rgba(var(--secondary-rgb), 0.2) 100%);
+    border: 1px solid rgba(var(--accent-rgb), 0.35);
+    border-radius: 16px 16px 4px 16px;
+    padding: 1rem 1.2rem;
+    margin: 0.6rem 0;
+    color: var(--text-main);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.chat-bubble-ai {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px 16px 16px 4px;
+    padding: 1rem 1.2rem;
+    margin: 0.6rem 0;
+    color: var(--text-main);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Form Inputs Styling */
+.stTextInput > div > div > input,
+.stSelectbox > div > div > div,
+.stTextArea > div > div > textarea,
+.stNumberInput > div > div > input {
+    background-color: rgba(22, 31, 51, 0.85) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-glass) !important;
+    border-radius: 12px !important;
+    min-height: 46px !important;
+    padding: 0.6rem 1rem !important;
+    transition: all 0.25s ease !important;
+}
+
+.stTextInput > div > div > input:focus,
+.stTextArea > div > div > textarea:focus {
+    border-color: var(--primary-accent) !important;
+    box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.35) !important;
+}
+
+/* Quote Card */
+.quote-card {
+    background: linear-gradient(135deg, rgba(var(--secondary-rgb), 0.15) 0%, rgba(var(--accent-rgb), 0.1) 100%);
+    border: 1px solid rgba(var(--secondary-rgb), 0.3);
+    border-radius: 14px;
+    padding: 1.2rem;
+    font-style: italic;
+    color: #e2e8f0;
+}
+
+/* Task Items */
+.task-item {
+    background: rgba(22, 31, 51, 0.5);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 0.85rem 1.2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.25s var(--spring-ease);
+}
+
+.task-item:hover {
+    background: rgba(30, 41, 59, 0.85);
+    border-color: var(--primary-accent);
+    transform: translateX(4px);
+}
+
+/* Roadmap Milestone Cards */
+.roadmap-phase {
+    background: var(--bg-card);
+    border-left: 4px solid var(--primary-accent);
+    border-radius: 0 14px 14px 0;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+    .synapse-header, .kairo-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+    
+    .timer-circle-wrapper {
+        width: 260px;
+        height: 260px;
+    }
+    
+    .timer-digits {
+        font-size: 3.4rem;
+    }
+    
+    .floating-ai-launcher {
+        bottom: 18px;
+        right: 18px;
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(var(--accent-rgb), 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-accent);
+}
