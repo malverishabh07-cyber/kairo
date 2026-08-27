@@ -1,5 +1,5 @@
 """
-Synapse AI - Responsive Helper Utility
+Kairo — Responsive Helper Utility
 Injects viewport detection and responsive CSS helper attributes into Streamlit DOM.
 """
 

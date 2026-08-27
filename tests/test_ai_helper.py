@@ -1,5 +1,5 @@
 """
-Unit tests for Synapse AI - AI Helper engine & student guardrails.
+Unit tests for Kairo — AI Helper engine & student guardrails.
 """
 
 from utils.ai_helper import (

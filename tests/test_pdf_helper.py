@@ -1,5 +1,5 @@
 """
-Unit tests for Synapse AI - ReportLab PDF generators.
+Unit tests for Kairo — ReportLab PDF generators.
 """
 
 from utils.pdf_helper import generate_resume_pdf, generate_study_plan_pdf, generate_roadmap_pdf
@@ -11,7 +11,7 @@ def test_generate_resume_pdf():
         "summary": "CS student specializing in AI.",
         "skills": "Python, TypeScript",
         "education": "Stanford University",
-        "projects": [{"title": "Synapse AI", "desc": "Productivity web app"}],
+        "projects": [{"title": "Kairo", "desc": "Productivity web app"}],
         "experience": [{"role": "Intern", "company": "Tech Lab", "period": "2025", "desc": "Built ML models"}]
     }
     pdf_bytes = generate_resume_pdf(sample_resume)

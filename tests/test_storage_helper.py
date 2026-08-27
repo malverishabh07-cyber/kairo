@@ -1,5 +1,5 @@
 """
-Unit tests for Synapse AI - Storage & user persistence helper.
+Unit tests for Kairo — Storage & user persistence helper.
 """
 
 import os
