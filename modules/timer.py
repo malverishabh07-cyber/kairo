@@ -74,6 +74,10 @@ def render_timer():
     }
     primary_color, sec_color, rgb_str = color_map.get(theme, ("#00f2fe", "#7f00ff", "0, 242, 254"))
 
+    # Pre-compute all dynamic values for universal Python 3.8-3.13 parser compatibility
+    sound_icon = "🔊" if sound_enabled else "🔇"
+    sound_active_js = "true" if sound_enabled else "false"
+
     # Render Interactive Real-Time JavaScript Circular Timer Component
     timer_html = f"""
     <!DOCTYPE html>
@@ -235,7 +239,7 @@ def render_timer():
         <div class="controls-row">
           <button class="btn btn-side" id="resetBtn" title="Reset (R)">🔄</button>
           <button class="btn btn-main" id="playBtn" title="Start/Pause (Space)">▶</button>
-          <button class="btn btn-side" id="soundBtn" title="Soundscape">{'🔊' if sound_enabled else '🔇'}</button>
+          <button class="btn btn-side" id="soundBtn" title="Soundscape">{sound_icon}</button>
         </div>
       </div>
 
@@ -256,16 +260,16 @@ def render_timer():
         let audioCtx = null;
         let noiseNode = null;
         let gainNode = null;
-        let soundActive = {'true' if sound_enabled else 'false'};
+        let soundActive = {sound_active_js};
 
-        function initAudio() {
-          if (!audioCtx) {
+        function initAudio() {{
+          if (!audioCtx) {{
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          }
-        }
+          }}
+        }}
 
-        function playChime() {
-          try {
+        function playChime() {{
+          try {{
             initAudio();
             const osc = audioCtx.createOscillator();
             const g = audioCtx.createGain();
@@ -278,26 +282,26 @@ def render_timer():
             g.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + 1.2);
-          } catch(e) {}
-        }
+          }} catch(e) {{}}
+        }}
 
-        function startAmbientNoise() {
+        function startAmbientNoise() {{
           if (!soundActive) return;
-          try {
+          try {{
             initAudio();
-            if (audioCtx.state === 'suspended') {
+            if (audioCtx.state === 'suspended') {{
               audioCtx.resume();
-            }
+            }}
             const bufferSize = audioCtx.sampleRate * 2;
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
             const data = buffer.getChannelData(0);
             let lastOut = 0.0;
-            for (let i = 0; i < bufferSize; i++) {
+            for (let i = 0; i < bufferSize; i++) {{
               const white = Math.random() * 2 - 1;
               data[i] = (lastOut + (0.02 * white)) / 1.02;
               lastOut = data[i];
               data[i] *= 3.5;
-            }
+            }}
             noiseNode = audioCtx.createBufferSource();
             noiseNode.buffer = buffer;
             noiseNode.loop = true;
@@ -313,17 +317,17 @@ def render_timer():
             filter.connect(gainNode);
             gainNode.connect(audioCtx.destination);
             noiseNode.start(0);
-          } catch(e) {}
-        }
+          }} catch(e) {{}}
+        }}
 
-        function stopAmbientNoise() {
-          if (noiseNode) {
-            try { noiseNode.stop(); noiseNode.disconnect(); } catch(e) {}
+        function stopAmbientNoise() {{
+          if (noiseNode) {{
+            try {{ noiseNode.stop(); noiseNode.disconnect(); }} catch(e) {{}}
             noiseNode = null;
-          }
-        }
+          }}
+        }}
 
-        function updateDisplay() {
+        function updateDisplay() {{
           const mins = Math.floor(remainingSeconds / 60);
           const secs = remainingSeconds % 60;
           timeDisplay.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
@@ -331,23 +335,23 @@ def render_timer():
           const progressRatio = remainingSeconds / TOTAL_SECONDS;
           const offset = CIRCUMFERENCE * (1 - progressRatio);
           progressRing.style.strokeDashoffset = offset;
-        }
+        }}
 
-        function toggleTimer() {
-          if (isRunning) {
+        function toggleTimer() {{
+          if (isRunning) {{
             clearInterval(timerInterval);
             isRunning = false;
             playBtn.textContent = '▶';
             stopAmbientNoise();
-          } else {
+          }} else {{
             isRunning = true;
             playBtn.textContent = '⏸';
             startAmbientNoise();
-            timerInterval = setInterval(() => {
-              if (remainingSeconds > 0) {
+            timerInterval = setInterval(() => {{
+              if (remainingSeconds > 0) {{
                 remainingSeconds--;
                 updateDisplay();
-              } else {
+              }} else {{
                 clearInterval(timerInterval);
                 isRunning = false;
                 playBtn.textContent = '▶';
@@ -355,41 +359,41 @@ def render_timer():
                 playChime();
                 timerWrap.classList.add('celebrate-pulse');
                 setTimeout(() => timerWrap.classList.remove('celebrate-pulse'), 1200);
-              }
-            }, 1000);
-          }
-        }
+              }}
+            }}, 1000);
+          }}
+        }}
 
-        function resetTimer() {
+        function resetTimer() {{
           clearInterval(timerInterval);
           isRunning = false;
           playBtn.textContent = '▶';
           remainingSeconds = TOTAL_SECONDS;
           stopAmbientNoise();
           updateDisplay();
-        }
+        }}
 
         playBtn.addEventListener('click', toggleTimer);
         resetBtn.addEventListener('click', resetTimer);
 
-        soundBtn.addEventListener('click', () => {
+        soundBtn.addEventListener('click', () => {{
           soundActive = !soundActive;
           soundBtn.textContent = soundActive ? '🔊' : '🔇';
-          if (isRunning) {
+          if (isRunning) {{
             if (soundActive) startAmbientNoise();
             else stopAmbientNoise();
-          }
-        });
+          }}
+        }});
 
-        window.addEventListener('keydown', (e) => {
-          if (e.code === 'Space') {
+        window.addEventListener('keydown', (e) => {{
+          if (e.code === 'Space') {{
             e.preventDefault();
             toggleTimer();
-          } else if (e.code === 'KeyR') {
+          }} else if (e.code === 'KeyR') {{
             e.preventDefault();
             resetTimer();
-          }
-        });
+          }}
+        }});
 
         updateDisplay();
       </script>
